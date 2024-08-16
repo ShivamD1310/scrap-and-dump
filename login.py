@@ -29,9 +29,10 @@ def main():
     # Perform the login request
     response = requests.post(login_url, data=payload)
 
-    # Check the status code and response text
-    print(f"Status Code: {response.status_code}")
-    print(f"Response Text: {response.text}")
+    # Return the response object
+    return response
 
 if __name__ == "__main__":
-    main()
+    response = main()
+    print(f"Status Code: {response.status_code}")
+    print(f"Response Text: {response.text}")
