@@ -1,5 +1,6 @@
 import os
 import requests
+import pandas as pd
 from bs4 import BeautifulSoup
 
 def login(username, password):
@@ -25,15 +26,25 @@ def scrape_profit_loss(cookies):
     
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
+        
+        # Extract headers
         header_elements = soup.select_one('body main section:nth-of-type(5) div:nth-of-type(3) thead')
         headers = [th.text.strip() for th in header_elements.find_all('th')] if header_elements else []
-        print("Headers:", '\t'.join(headers))
         
+        # Extract rows
         rows = soup.select_one('body main section:nth-of-type(5) div:nth-of-type(3)').find_all('tr')
+        data_rows = []
         
         for row in rows:
             cols = [col.text.strip() for col in row.find_all('td')]
-            print('\t'.join(cols))  # Print the row data separated by tabs
+            if cols:  # Add non-empty rows
+                data_rows.append(cols)
+        
+        # Convert to DataFrame and save to CSV
+        df = pd.DataFrame(data_rows, columns=headers)
+        df.to_csv('profit_loss.csv', index=False, encoding='utf-8')
+        
+        print("Data has been written to profit_loss.csv")
     else:
         print(f"Failed to access Reliance page. Status Code: {response.status_code}")
 
