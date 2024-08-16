@@ -42,7 +42,7 @@ def scrape_profit_loss(cookies):
         
         # Convert to DataFrame and save to CSV
         df = pd.DataFrame(data_rows, columns=headers)
-        df.to_csv('profit_loss.csv', index=False, encoding='utf-8')
+        df.to_csv('scraped-data/profit_loss.csv', index=False, encoding='utf-8')
         
         print("Data has been written to profit_loss.csv")
     else:
