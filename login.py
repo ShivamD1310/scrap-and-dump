@@ -26,7 +26,7 @@ def scrape_profit_loss(cookies):
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
         
-        headers = [th.text.strip() for th in soup.select('table thead tr th')]
+        headers = [th.text.strip() for th in soup.select_one('table thead tr').find_all('th')]
         print("Headers:", headers)
         
         rows = soup.select_one('body main section:nth-of-type(5) div:nth-of-type(3)').find_all('tr')
