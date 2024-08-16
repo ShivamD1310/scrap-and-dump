@@ -25,18 +25,13 @@ def scrape_profit_loss(cookies):
     
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
-
-        table = soup.select_one('body main section:nth-of-type(5) div:nth-of-type(3) table')
-
-        if table:
-            headers = [th.text.strip() for th in table.select('thead th')]
-            print("Headers:", '\t'.join(headers))
-            
-            # Extract rows
-            rows = table.select('tbody tr')
-            for row in rows:
-                cols = [td.text.strip() for td in row.find_all('td')]
-                print('\t'.join(cols))  # Print the row data separated by tabs
+        headers = [header.get_text(strip=True) for header in table.find_all('th')]
+        print(f"Headers: {headers}")
+        rows = soup.select_one('body main section:nth-of-type(5) div:nth-of-type(3)').find_all('tr')
+        
+        for row in rows:
+            cols = [col.text.strip() for col in row.find_all('td')]
+            print('\t'.join(cols))  # Print the row data separated by tabs
     else:
         print(f"Failed to access Reliance page. Status Code: {response.status_code}")
 
