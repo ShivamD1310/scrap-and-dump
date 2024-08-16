@@ -1,7 +1,6 @@
 import os
 import requests
 from bs4 import BeautifulSoup
-import csv
 
 def login(username, password):
     login_url = 'https://www.screener.in/login/'
@@ -28,12 +27,9 @@ def scrape_profit_loss(cookies):
         soup = BeautifulSoup(response.text, 'html.parser')
         rows = soup.select_one('body main section:nth-of-type(5) div:nth-of-type(3)').find_all('tr')
         
-        with open('profit_loss_data.csv', 'w', newline='') as file:
-            writer = csv.writer(file)
-            for row in rows:
-                cols = [col.text.strip() for col in row.find_all('td')]
-                writer.writerow(cols)
-        print("Data has been written to profit_loss_data.csv")
+        for row in rows:
+            cols = [col.text.strip() for col in row.find_all('td')]
+            print('\t'.join(cols))  # Print the row data separated by tabs
     else:
         print(f"Failed to access Reliance page. Status Code: {response.status_code}")
 
