@@ -1,59 +1,51 @@
 import os
 import requests
 from bs4 import BeautifulSoup
-
-def get_csrf_token(login_url):
-    response = requests.get(login_url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    csrf_token = soup.find('input', {'name': 'csrfmiddlewaretoken'})['value']
-    return csrf_token
+import csv
 
 def login(username, password):
     login_url = 'https://www.screener.in/login/'
-    csrf_token = get_csrf_token(login_url)
+    response = requests.get(login_url)
+    csrf_token = BeautifulSoup(response.text, 'html.parser').find('input', {'name': 'csrfmiddlewaretoken'})['value']
     
     payload = {
         'username': username,
         'password': password,
         'csrfmiddlewaretoken': csrf_token
     }
-    
     headers = {
         'Referer': login_url,
         'X-CSRFToken': csrf_token
     }
-    
-    session = requests.Session()
-    response = session.post(login_url, data=payload, headers=headers, cookies={'csrftoken': csrf_token})
-    
-    if "Core Watchlist feed" in response.text:
-        print("Login successful!")
-    else:
-        print("Login failed.")
-        return None
-    
-    return session
+    response = requests.post(login_url, data=payload, headers=headers, cookies={'csrftoken': csrf_token})
+    return response.cookies if response.status_code == 200 else None
 
-def access_reliance_page(session):
+def scrape_profit_loss(cookies):
     reliance_url = 'https://www.screener.in/company/RELIANCE/consolidated/'
-    response = session.get(reliance_url)
+    response = requests.get(reliance_url, cookies=cookies)
     
-    # Print status code and first 500 characters of response text
-    print(f"Status Code: {response.status_code}")
-    print("Response Text (first 500 characters):")
-    print(response.text[:500])  # Print the first 500 characters for brevity
+    if response.status_code == 200:
+        soup = BeautifulSoup(response.text, 'html.parser')
+        rows = soup.select_one('body main section:nth-of-type(5) div:nth-of-type(3)').find_all('tr')
+        
+        with open('profit_loss_data.csv', 'w', newline='') as file:
+            writer = csv.writer(file)
+            for row in rows:
+                cols = [col.text.strip() for col in row.find_all('td')]
+                writer.writerow(cols)
+        print("Data has been written to profit_loss_data.csv")
+    else:
+        print(f"Failed to access Reliance page. Status Code: {response.status_code}")
 
 def main():
     username = os.getenv('USERNAME')
     password = os.getenv('PASSWORD')
-    
     print(f"USERNAME: {username}")
     print(f"PASSWORD: {password}")
     
-    session = login(username, password)
-    
-    if session:
-        access_reliance_page(session)
+    cookies = login(username, password)
+    if cookies:
+        scrape_profit_loss(cookies)
 
 if __name__ == "__main__":
     main()
