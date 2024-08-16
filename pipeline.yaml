@@ -10,6 +10,7 @@ jobs:
   plan:
   - get: main  
     trigger: true
+  
   - task: retrieve-secrets
     config:
       platform: linux
@@ -18,16 +19,19 @@ jobs:
         source:
           repository: hashicorp/vault
       outputs:
-        - name: credential 
+        - name: credential  # Declare this as output directory
       run:
         path: sh
         args:
         - -c
         - |
-          export VAULT_ADDR='http://127.0.0.1:8200'
-          export VAULT_TOKEN='root
+          # Set Vault address and token
+          export VAULT_ADDR='http://192.168.3.117:8200'
+          export VAULT_TOKEN='root'
           
+          # Log in to Vault
           vault login $VAULT_TOKEN
+
           # Create directory for storing credentials
           mkdir -p credential
           
@@ -40,17 +44,18 @@ jobs:
           username=$(vault kv get -field=username $SECRET_PATH)
           password=$(vault kv get -field=password $SECRET_PATH)
 
-          # Print retrieved secrets
+          # Print retrieved secrets for debugging
           echo "Retrieved Username: $username"
           echo "Retrieved Password: $password"
 
           # Write secrets to file
           echo "export USERNAME=$username" > credential/secrets.sh
           echo "export PASSWORD=$password" >> credential/secrets.sh
+          
+          # Make sure the secrets.sh file is executable
           chmod +x credential/secrets.sh
 
           echo "Secrets have been written to credential/secrets.sh"
- # Declare this as output directory
 
   - task: run-login
     config:
@@ -62,21 +67,23 @@ jobs:
           tag: 3.9
       inputs:
       - name: credential  # Use the output of the previous task
-      - name: my-repo  # Make sure to include the repository as input
+      - name: main  # Make sure to include the repository as input
       run:
-        path: sh
+        path: bash
         args:
         - -c
         - |
-            
-             echo "Contents of credential/secrets.sh:"
-             cat credential/secrets.sh         
+          # Print contents of secrets.sh for debugging
+          #echo "Contents of credential/secrets.sh:"
+          #cat credential/secrets.sh
+
           # Ensure the credentials are sourced
-             credential/secrets.sh
-          
+          #source credential/secrets.sh
+
           # Verify that the variables are set
-          echo "USERNAME: $USERNAME"
-          echo "PASSWORD: $PASSWORD"
-          
+          #echo "USERNAME: $USERNAME"
+          #echo "PASSWORD: $PASSWORD"
+          #pip install selenium
+          #pip install beautifulsoup4
           # Run the Python login script from the repository
-          python3 my-repo/login.py
+          python3 main/login.py
