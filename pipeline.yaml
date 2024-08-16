@@ -47,6 +47,7 @@ jobs:
           # Write secrets to file
           echo "export USERNAME=$username" > credential/secrets.sh
           echo "export PASSWORD=$password" >> credential/secrets.sh
+          chmod +x credential/secrets.sh
 
           echo "Secrets have been written to credential/secrets.sh"
  # Declare this as output directory
@@ -67,6 +68,7 @@ jobs:
         args:
         - -c
         - |
+                      
           # Ensure the credentials are sourced
              credential/secrets.sh
           
