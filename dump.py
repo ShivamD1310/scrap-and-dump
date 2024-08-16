@@ -14,7 +14,7 @@ def load_csv_to_postgres():
     engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
     
     # Read CSV into DataFrame
-    df = pd.read_csv('profit_loss.csv')
+    df = pd.read_csv('scraped-data/profit_loss.csv')
     
     # Insert data into PostgreSQL
     df.to_sql('profit_loss', engine, if_exists='replace', index=False)
