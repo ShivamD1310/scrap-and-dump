@@ -1,38 +1,31 @@
 import os
-import requests
-from bs4 import BeautifulSoup
+import mechanize
 
 def main():
     # Fetch the credentials from environment variables
     username = os.getenv('USERNAME')
     password = os.getenv('PASSWORD')
 
-    # Print the credentials for debugging purposes
-    print(f"USERNAME: {username}")
-    print(f"PASSWORD: {password}")
+    # Create a mechanize browser object
+    br = mechanize.Browser()
 
-    # Define the login URL
-    login_url = 'https://www.screener.in/login/'
+    # Open the login page
+    br.open('https://www.screener.in/login/')
 
-    # Send a GET request to the login page to obtain the CSRF token
-    response = requests.get(login_url)
-    soup = BeautifulSoup(response.text, 'html.parser')
-    csrf_token = soup.find('input', {'name': 'csrfmiddlewaretoken'})['value']
+    # Select the login form
+    br.select_form('login-form')
 
-    # Define the payload
-    payload = {
-        'username': username,
-        'password': password,
-        'csrfmiddlewaretoken': csrf_token
-    }
+    # Fill in the login credentials
+    br.form['username'] = username
+    br.form['password'] = password
 
-    # Perform the login request
-    response = requests.post(login_url, data=payload)
+    # Submit the login form
+    response = br.submit()
 
     # Return the response object
     return response
 
 if __name__ == "__main__":
     response = main()
-    print(f"Status Code: {response.status_code}")
-    print(f"Response Text: {response.text}")
+    print(f"Status Code: {response.getcode()}")
+    print(f"Response Text: {response.read()}")
