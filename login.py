@@ -9,6 +9,9 @@ def main():
     # Create a mechanize browser object
     br = mechanize.Browser()
 
+    # Ignore robots.txt
+    br.set_handle_robots(False)
+
     # Open the login page
     br.open('https://www.screener.in/login/')
 
