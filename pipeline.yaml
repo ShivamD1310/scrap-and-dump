@@ -68,7 +68,9 @@ jobs:
         args:
         - -c
         - |
-                      
+            
+             echo "Contents of credential/secrets.sh:"
+             cat credential/secrets.sh         
           # Ensure the credentials are sourced
              credential/secrets.sh
           
