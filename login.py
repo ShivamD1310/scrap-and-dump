@@ -44,6 +44,8 @@ def scrape_profit_loss(cookies):
         # Create DataFrame
         if data:
             df = pd.DataFrame(data, columns=headers)
+            # Save DataFrame to CSV
+            df.to_csv('profit_loss.csv', index=False)
             return df
         else:
             print("No data to insert.")
@@ -52,28 +54,28 @@ def scrape_profit_loss(cookies):
         print(f"Failed to access Reliance page. Status Code: {response.status_code}")
         return None
 
-def connect_to_db():
-    try:
-        # Create SQLAlchemy engine
-        engine = create_engine('postgresql+psycopg2://user:test123@localhost:5432/task')
-        return engine
-    except Exception as e:
-        print(f"Error connecting to the database: {e}")
-        return None
-
-def save_to_postgres(df, table_name):
-    engine = connect_to_db()
-    if engine:
-        try:
-            # Save DataFrame to PostgreSQL
-            df.to_sql(table_name, engine, if_exists='replace', index=False)
-            print(f"Data successfully inserted into the table '{table_name}'.")
-        except Exception as e:
-            print(f"Error inserting data into PostgreSQL: {e}")
+def load_csv_to_postgres():
+    # PostgreSQL connection details
+    user = os.getenv('POSTGRES_USER', 'user')
+    password = os.getenv('POSTGRES_PASSWORD', 'test123')
+    host = os.getenv('POSTGRES_HOST', '192.168.3.116')  # Updated to the new IP address
+    port = os.getenv('POSTGRES_PORT', '5432')
+    database = os.getenv('POSTGRES_DB', 'task')
+    
+    # Create an engine instance
+    engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
+    
+    # Read CSV into DataFrame
+    df = pd.read_csv('profit_loss.csv')
+    
+    # Insert data into PostgreSQL
+    df.to_sql('profit_loss', engine, if_exists='replace', index=False)
+    print("Data has been inserted into PostgreSQL.")
 
 def main():
     username = os.getenv('USERNAME')
     password = os.getenv('PASSWORD')
+    
     print(f"USERNAME: {username}")
     print(f"PASSWORD: {password}")
     
@@ -82,8 +84,8 @@ def main():
         df = scrape_profit_loss(cookies)
         if df is not None:
             print(df)
-            # Save the DataFrame to PostgreSQL
-            save_to_postgres(df, 'profit_loss')
+            # Save the DataFrame to CSV and load into PostgreSQL
+            load_csv_to_postgres()
         else:
             print("No DataFrame to save.")
 
