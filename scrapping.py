@@ -70,6 +70,8 @@ def scrape_profit_loss(cookies):
 
             for cols in df.columns:
                 df[cols] = df[cols].fillna(0)
+
+            df1 = df.mean(axis=1)
             
             # Print the DataFrame and transformed DataFrame
             print("Original DataFrame:")
@@ -77,7 +79,7 @@ def scrape_profit_loss(cookies):
             print('------------------------')
             df = df.fillna(0)
             print('updated df')
-            print(df)
+            print(df1)
             
             #print('Transformed DataFrame:')
             #print(df_transposed)
