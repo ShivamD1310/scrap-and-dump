@@ -25,7 +25,12 @@ db_conn_str = f'postgresql://{db_user}:{db_password}@{db_host}:{db_port}/{db_nam
 engine = create_engine(db_conn_str)
 
 # Define the query to fetch data from PostgreSQL
-query = 'SELECT * FROM profit_loss;'  # Replace with your actual table name
+query = """
+SELECT
+    "column", "Mar 2013", "Mar 2014", "Mar 2015", "Mar 2016", "Mar 2017", "Mar 2018", "Mar 2019",
+    "Mar 2020", "Mar 2021", "Mar 2022", "Mar 2023", "Mar 2024", "TTM"
+FROM profit_loss;
+"""
 
 def send_to_kafka(producer, topic, df):
     for index, row in df.iterrows():
