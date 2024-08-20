@@ -49,7 +49,7 @@ def scrape_profit_loss(cookies):
             print(df)
 
             df_transpose = df.transpose()
-            print(df_transpose)
+            print(df_transpose.columns)
             
             # # List of columns that may contain percentages
             # percentage_columns = ['OPM', 'Tax', 'Dividend Payout']
