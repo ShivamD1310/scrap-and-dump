@@ -57,7 +57,11 @@ def scrape_profit_loss(cookies):
             df_transposed.reset_index(inplace=True)
             
             # Print the transposed DataFrame in the console
-            print("Transposed DataFrame:")
+            print("DataFrame:")
+            print(df)
+
+            print('------------------------')
+            print('transformed Data')
             print(df_transposed)
             
             return df_transposed
