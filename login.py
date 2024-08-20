@@ -1,5 +1,8 @@
 import os
 import requests
+import pandas as pd
+import psycopg2
+from sqlalchemy import create_engine
 from bs4 import BeautifulSoup
 
 def login(username, password):
@@ -32,15 +35,40 @@ def scrape_profit_loss(cookies):
         # Extract rows
         rows = soup.select('body main section:nth-of-type(5) div:nth-of-type(3) tbody tr')
         
-        # Print headers
-        print('\t'.join(headers))
-        
-        # Print rows
+        # Prepare data for DataFrame
+        data = []
         for row in rows:
             cols = [col.text.strip() for col in row.find_all('td')]
-            print('\t'.join(cols))  # Print the row data separated by tabs
+            if len(cols) > 1:
+                data.append(cols)
+        
+        # Create DataFrame
+        if data:
+            df = pd.DataFrame(data, columns=headers)
+            return df
+        else:
+            print("No data to insert.")
+            return None
     else:
         print(f"Failed to access Reliance page. Status Code: {response.status_code}")
+        return None
+
+def connect_to_db():
+    try:
+        engine = create_engine('postgresql+psycopg2://user:test123@localhost:5432/task')
+        return engine
+    except Exception as e:
+        print(f"Error connecting to the database: {e}")
+        return None
+
+def save_to_postgres(df, table_name):
+    engine = connect_to_db()
+    if engine:
+        try:
+            df.to_sql(table_name, engine, if_exists='replace', index=False)
+            print(f"Data successfully inserted into the table '{table_name}'.")
+        except Exception as e:
+            print(f"Error inserting data into PostgreSQL: {e}")
 
 def main():
     username = os.getenv('USERNAME')
@@ -50,7 +78,13 @@ def main():
     
     cookies = login(username, password)
     if cookies:
-        scrape_profit_loss(cookies)
+        df = scrape_profit_loss(cookies)
+        if df is not None:
+            print(df)
+            # Save the DataFrame to PostgreSQL
+            save_to_postgres(df, 'profit_loss')
+        else:
+            print("No DataFrame to save.")
 
 if __name__ == "__main__":
     main()
