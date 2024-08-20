@@ -53,8 +53,8 @@ def scrape_profit_loss(cookies):
             # Transpose the DataFrame
             df_transposed = df.transpose()
             
-            # Reset index to make the transposed rows into columns
-            df_transposed.reset_index(inplace=True)
+            # Reset index and drop the old index column
+            df_transposed.reset_index(drop=True, inplace=True)
             
             # Check for percentage values in the rows and convert to integer
             for index, row in df_transposed.iterrows():
