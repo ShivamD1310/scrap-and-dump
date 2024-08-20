@@ -47,24 +47,26 @@ def scrape_profit_loss(cookies):
             # Replace any empty column names with 'column'
             df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
             
-            # Replace NaN values with 0
-            df = df.fillna(0)
+            # List of columns that may contain percentages
+            percentage_columns = ['OPM', 'Tax', 'Dividend Payout']
             
-            # Check for percentage values in the rows and convert to integer
-            for index, row in df.iterrows():
-                for col in df.columns:
-                    if isinstance(row[col], str) and ' %' in row[col]:
-                        df.at[index, col] = row[col].replace(' %', '').strip()
+            # Remove '%' sign from specific columns and convert to numeric
+            for col in df.columns:
+                if col in percentage_columns:
+                    df[col] = df[col].astype(str).replace('%', '', regex=True).str.strip()
+                
+                # Convert the remaining columns to numeric (except percentage columns)
+                if col not in percentage_columns:
+                    df[col] = df[col].astype(str).replace({',': '', '\$': ''}, regex=True).str.strip()
             
-            # Convert to numeric and handle errors (e.g., empty strings)
-            #df = df.apply(pd.to_numeric, errors='ignore')
+            # Convert columns to numeric where possible
+            df = df.apply(pd.to_numeric, errors='ignore')
             
             # Fill NaN values with 0
             df = df.fillna(0)
-            print(df)
-
+            
             # Calculate the mean for each row
-            #df_mean = df.mean(axis=1)
+            df_mean = df.mean(axis=1)
 
             # Print the DataFrame and the calculated means
             print("Original DataFrame:")
