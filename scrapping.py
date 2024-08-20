@@ -50,41 +50,29 @@ def scrape_profit_loss(cookies):
             # Replace NaN values with 0
             df = df.fillna(0)
             
-            # Transpose the DataFrame
-            df_transposed = df.transpose()
-            
-            # Reset index and drop the old index column
-            df_transposed.reset_index(drop=True, inplace=True)
-            
             # Check for percentage values in the rows and convert to integer
-            for index, row in df_transposed.iterrows():
-                for col in df_transposed.columns:
+            for index, row in df.iterrows():
+                for col in df.columns:
                     if isinstance(row[col], str) and '%' in row[col]:
-                        df_transposed.at[index, col] = row[col].replace('%', '').strip()
-                        
+                        df.at[index, col] = row[col].replace('%', '').strip()
+            
             # Convert to numeric and handle errors (e.g., empty strings)
-            df_transposed = df_transposed.apply(pd.to_numeric, errors='ignore')
+            df = df.apply(pd.to_numeric, errors='ignore')
             
             # Fill NaN values with 0
-            df_transposed = df_transposed.fillna(0)
+            df = df.fillna(0)
 
-            for cols in df.columns:
-                df[cols] = df[cols].fillna(0)
+            # Calculate the mean for each row
+            df_mean = df.mean(axis=1)
 
-            df1 = df.mean(axis=1)
-            
-            # Print the DataFrame and transformed DataFrame
+            # Print the DataFrame and the calculated means
             print("Original DataFrame:")
             print(df)
             print('------------------------')
-            df = df.fillna(0)
-            print('updated df')
-            print(df1)
+            print('Row-wise Mean:')
+            print(df_mean)
             
-            #print('Transformed DataFrame:')
-            #print(df_transposed)
-            
-            return df_transposed
+            return df
         else:
             print("No data to insert.")
             return None
