@@ -55,7 +55,7 @@ def scrape_profit_loss(cookies):
                 if col in percentage_columns:
                     df[col] = df[col].astype(str).replace('%', '', regex=True).str.strip()
                 
-                 Convert the remaining columns to numeric (except percentage columns)
+                 #Convert the remaining columns to numeric (except percentage columns)
                 if col not in percentage_columns:
                     df[col] = df[col].astype(str).replace({',': '', '\$': ''}, regex=True).str.strip()
             
