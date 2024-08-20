@@ -6,7 +6,7 @@ import json
 # PostgreSQL connection parameters
 db_user = 'user'
 db_password = 'test123'
-db_host = 'localhost'
+db_host = '192.168.3.116'
 db_port = '5432'
 db_name = 'task'
 
