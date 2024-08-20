@@ -1,7 +1,6 @@
 import os
 import requests
 import pandas as pd
-import psycopg2
 from sqlalchemy import create_engine
 from bs4 import BeautifulSoup
 
@@ -55,23 +54,22 @@ def scrape_profit_loss(cookies):
 
 def connect_to_db():
     try:
+        # Create SQLAlchemy engine
         engine = create_engine('postgresql+psycopg2://user:test123@localhost:5432/task')
         return engine
     except Exception as e:
         print(f"Error connecting to the database: {e}")
         return None
 
-def connect_to_db():
-    try:
-        # Test connection
-        engine = create_engine('postgresql+psycopg2://user:test123@localhost:5432/task')
-        connection = engine.connect()
-        print("Connection to PostgreSQL successful!")
-        connection.close()
-        return engine
-    except Exception as e:
-        print(f"Error connecting to the database: {e}")
-        return None
+def save_to_postgres(df, table_name):
+    engine = connect_to_db()
+    if engine:
+        try:
+            # Save DataFrame to PostgreSQL
+            df.to_sql(table_name, engine, if_exists='replace', index=False)
+            print(f"Data successfully inserted into the table '{table_name}'.")
+        except Exception as e:
+            print(f"Error inserting data into PostgreSQL: {e}")
 
 def main():
     username = os.getenv('USERNAME')
