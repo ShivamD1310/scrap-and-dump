@@ -56,17 +56,17 @@ def scrape_profit_loss(cookies):
                     df[col] = df[col].astype(str).replace('%', '', regex=True).str.strip()
                 
                 # Convert the remaining columns to numeric (except percentage columns)
-                if col not in percentage_columns:
-                    df[col] = df[col].astype(str).replace({',': '', '\$': ''}, regex=True).str.strip()
+                #if col not in percentage_columns:
+                 #   df[col] = df[col].astype(str).replace({',': '', '\$': ''}, regex=True).str.strip()
             
             # Convert columns to numeric where possible
-            df = df.apply(pd.to_numeric, errors='ignore')
+            #df = df.apply(pd.to_numeric, errors='ignore')
             
             # Fill NaN values with 0
             df = df.fillna(0)
             
             # Calculate the mean for each row
-            df_mean = df.mean(axis=1)
+            #df_mean = df.mean(axis=1)
 
             # Print the DataFrame and the calculated means
             print("Original DataFrame:")
