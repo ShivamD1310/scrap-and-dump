@@ -1,8 +1,7 @@
-import os
-import requests
 import pandas as pd
-from sqlalchemy import create_engine
 from bs4 import BeautifulSoup
+import requests
+import os
 
 def login(username, password):
     login_url = 'https://www.screener.in/login/'
@@ -43,7 +42,6 @@ def scrape_profit_loss(cookies):
         
         # Create DataFrame
         if data:
-            # Ensure headers and data are correctly aligned
             df = pd.DataFrame(data, columns=headers)
             
             # Replace any empty column names with 'column'
@@ -52,14 +50,17 @@ def scrape_profit_loss(cookies):
             # Replace NaN values with 0
             df = df.fillna(0)
             
-            # Melt the DataFrame to convert rows into columns
-            df_melted = df.melt(id_vars=['column'], var_name='Year', value_name='Value')
+            # Transpose the DataFrame
+            df_transposed = df.transpose()
             
-            # Display the melted DataFrame in console
-            print("Melted DataFrame:")
-            print(df_melted)
+            # Reset index to make the transposed rows into columns
+            df_transposed.reset_index(inplace=True)
             
-            return df_melted
+            # Print the transposed DataFrame in the console
+            print("Transposed DataFrame:")
+            print(df_transposed)
+            
+            return df_transposed
         else:
             print("No data to insert.")
             return None
@@ -73,12 +74,7 @@ def main():
     
     cookies = login(username, password)
     if cookies:
-        df = scrape_profit_loss(cookies)
-        if df is not None:
-            # Just print the DataFrame in this case
-            print(df)
-        else:
-            print("No DataFrame to show.")
+        scrape_profit_loss(cookies)
 
 if __name__ == "__main__":
     main()
