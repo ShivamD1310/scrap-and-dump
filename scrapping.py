@@ -48,7 +48,7 @@ def scrape_profit_loss(cookies):
             df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
             
             # Replace NaN values with 0
-            df = df.fillna(0)
+            # df = df.fillna(0)
             
             # Transpose the DataFrame
             df_transposed = df.transpose()
@@ -56,12 +56,20 @@ def scrape_profit_loss(cookies):
             # Reset index to make the transposed rows into columns
             df_transposed.reset_index(inplace=True)
             
-            # Print the transposed DataFrame in the console
-            print("DataFrame:")
+            # Check for '%' in columns and convert to integer
+            for col in df_transposed.columns:
+                if df_transposed[col].astype(str).str.contains('%').any():
+                    df_transposed[col] = df_transposed[col].astype(str).str.replace('%', '').astype(float).astype(int)
+            
+            # Fill NaN values with 0
+            df_transposed = df_transposed.fillna(0)
+            
+            # Print the DataFrame and transformed DataFrame
+            print("Original DataFrame:")
             print(df)
-
+            
             print('------------------------')
-            print('transformed Data')
+            print('Transformed DataFrame:')
             print(df_transposed)
             
             return df_transposed
