@@ -51,10 +51,10 @@ def scrape_profit_loss(cookies):
             df = df.fillna(0)
             
             # Check for percentage values in the rows and convert to integer
-            #for index, row in df.iterrows():
-             #   for col in df.columns:
-              #      if isinstance(row[col], str) and '%' in row[col]:
-               #         df.at[index, col] = row[col].replace('%', '').strip()
+            for index, row in df.iterrows():
+                for col in df.columns:
+                    if isinstance(row[col], str) and ' %' in row[col]:
+                        df.at[index, col] = row[col].replace(' %', '').strip()
             
             # Convert to numeric and handle errors (e.g., empty strings)
             #df = df.apply(pd.to_numeric, errors='ignore')
@@ -64,7 +64,7 @@ def scrape_profit_loss(cookies):
             print(df)
 
             # Calculate the mean for each row
-            df_mean = df.mean(axis=1)
+            #df_mean = df.mean(axis=1)
 
             # Print the DataFrame and the calculated means
             print("Original DataFrame:")
