@@ -75,6 +75,8 @@ def load_csv_to_postgres():
     
     # Handle the case of any empty column names in the CSV
     df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
+
+    df = df.fillna(0)
     
     # Insert data into PostgreSQL
     df.to_sql('profit_loss', engine, if_exists='replace', index=False)
