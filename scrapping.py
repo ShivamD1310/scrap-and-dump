@@ -58,6 +58,7 @@ def scrape_profit_loss(cookies):
             
             # Process percentage values in rows
             for col in df_transposed.columns:
+                print(col)
                 # Check if column header contains '%'
                 if '%' in col:
                     # Remove '%' sign and convert to numeric
