@@ -12,7 +12,7 @@ db_name = 'task'
 
 # Kafka configuration
 kafka_conf = {
-    'bootstrap.servers': 'localhost:19092',  # Replace with your Kafka broker address
+    'bootstrap.servers': 'kafka:9092',  # Replace with your Kafka broker address
 }
 
 # Create Kafka producer
