@@ -44,6 +44,11 @@ def scrape_profit_loss(cookies):
         # Create DataFrame
         if data:
             df = pd.DataFrame(data, columns=headers)
+            
+            # Handle the case of an empty column name
+            if df.columns[0].strip() == '':
+                df.columns = ['column']
+            
             # Save DataFrame to CSV
             df.to_csv('profit_loss.csv', index=False)
             return df
@@ -68,6 +73,10 @@ def load_csv_to_postgres():
     # Read CSV into DataFrame
     df = pd.read_csv('profit_loss.csv')
     
+    # Handle the case of an empty column name in the CSV
+    if df.columns[0].strip() == '':
+        df.columns = ['column']
+    
     # Insert data into PostgreSQL
     df.to_sql('profit_loss', engine, if_exists='replace', index=False)
     print("Data has been inserted into PostgreSQL.")
@@ -75,9 +84,6 @@ def load_csv_to_postgres():
 def main():
     username = os.getenv('USERNAME')
     password = os.getenv('PASSWORD')
-    
-    print(f"USERNAME: {username}")
-    print(f"PASSWORD: {password}")
     
     cookies = login(username, password)
     if cookies:
