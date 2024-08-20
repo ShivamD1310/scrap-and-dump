@@ -61,6 +61,7 @@ def scrape_profit_loss(cookies):
             
             # Fill NaN values with 0
             df = df.fillna(0)
+            print(df)
 
             # Calculate the mean for each row
             df_mean = df.mean(axis=1)
