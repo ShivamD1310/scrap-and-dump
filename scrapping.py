@@ -46,34 +46,38 @@ def scrape_profit_loss(cookies):
             
             # Replace any empty column names with 'column'
             df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
-            
-            # List of columns that may contain percentages
-            percentage_columns = ['OPM', 'Tax', 'Dividend Payout']
-            
-            # Remove '%' sign from specific columns and convert to numeric
-            for col in df.columns:
-                if col in percentage_columns:
-                    df[col] = df[col].astype(str).replace('%', '', regex=True).str.strip()
-                
-                 #Convert the remaining columns to numeric (except percentage columns)
-                if col not in percentage_columns:
-                    df[col] = df[col].astype(str).replace({',': '', '\$': ''}, regex=True).str.strip()
-            
-            # Convert columns to numeric where possible
-            df = df.apply(pd.to_numeric, errors='ignore')
-            
-            # Fill NaN values with 0
-            df = df.fillna(0)
-            
-            # Calculate the mean for each row
-            df['mean'] = df.mean(axis=1)
-
-            # Print the DataFrame and the calculated means
-            print("Original DataFrame:")
             print(df)
-            print('------------------------')
-            print('Row-wise Mean:')
-            print(df_mean)
+
+            df_transpose = df.transpose()
+            print(df_transpose)
+            
+            # # List of columns that may contain percentages
+            # percentage_columns = ['OPM', 'Tax', 'Dividend Payout']
+            
+            # # Remove '%' sign from specific columns and convert to numeric
+            # for col in df.columns:
+            #     if col in percentage_columns:
+            #         df[col] = df[col].astype(str).replace('%', '', regex=True).str.strip()
+                
+            #      #Convert the remaining columns to numeric (except percentage columns)
+            #     if col not in percentage_columns:
+            #         df[col] = df[col].astype(str).replace({',': '', '\$': ''}, regex=True).str.strip()
+            
+            # # Convert columns to numeric where possible
+            # df = df.apply(pd.to_numeric, errors='ignore')
+            
+            # # Fill NaN values with 0
+            # df = df.fillna(0)
+            
+            # # Calculate the mean for each row
+            # df['mean'] = df.mean(axis=1)
+
+            # # Print the DataFrame and the calculated means
+            # print("Original DataFrame:")
+            # print(df)
+            # print('------------------------')
+            # print('Row-wise Mean:')
+            # print(df_mean)
             
             return df
         else:
