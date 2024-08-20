@@ -56,14 +56,12 @@ def scrape_profit_loss(cookies):
             # Reset index to make the transposed rows into columns
             df_transposed.reset_index(inplace=True)
             
-            # Check for percentage values in the rows and convert to integer
-            for index, row in df_transposed.iterrows():
-                for col in df_transposed.columns:
-                    if isinstance(row[col], str) and '%' in row[col]:
-                        df_transposed.at[index, col] = row[col].replace('%', '').strip()
-                        
-            # Convert to numeric and handle errors (e.g., empty strings)
-            df_transposed = df_transposed.apply(pd.to_numeric, errors='ignore')
+            # Process percentage values in rows
+            for col in df_transposed.columns:
+                # Check if column header contains '%'
+                if '%' in col:
+                    # Remove '%' sign and convert to numeric
+                    df_transposed[col] = df_transposed[col].replace('%', '', regex=True).astype(float)
             
             # Fill NaN values with 0
             df_transposed = df_transposed.fillna(0)
