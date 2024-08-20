@@ -71,10 +71,13 @@ def scrape_profit_loss(cookies):
             # Print the DataFrame and transformed DataFrame
             print("Original DataFrame:")
             print(df)
-            
             print('------------------------')
-            print('Transformed DataFrame:')
-            print(df_transposed)
+            df = df.fillna(0)
+            print('updated df')
+            print(df)
+            
+            #print('Transformed DataFrame:')
+            #print(df_transposed)
             
             return df_transposed
         else:
