@@ -57,12 +57,10 @@ def scrape_profit_loss(cookies):
             df_transposed.reset_index(inplace=True)
             
             # Process percentage values in rows
-            for col in df_transposed.columns:
-                print(col)
-                # Check if column header contains '%'
-                if '%' in col:
-                    # Remove '%' sign and convert to numeric
-                    df_transposed[col] = df_transposed[col].replace('%', '', regex=True).astype(float)
+            for col in df_transposed.columns[1:]:  # Skip the first column which is index
+                df_transposed[col] = df_transposed[col].apply(
+                    lambda x: float(x.replace('%', '').replace(',', '').strip()) if isinstance(x, str) and '%' in x else x
+                )
             
             # Fill NaN values with 0
             df_transposed = df_transposed.fillna(0)
