@@ -3,7 +3,7 @@ import requests
 import pandas as pd
 from sqlalchemy import create_engine
 from bs4 import BeautifulSoup
- 
+
 def login(username, password):
     login_url = 'https://www.screener.in/login/'
     response = requests.get(login_url)
@@ -19,7 +19,7 @@ def login(username, password):
     }
     response = requests.post(login_url, data=payload, headers=headers, cookies={'csrftoken': csrf_token})
     return response.cookies if response.status_code == 200 else None
- 
+
 def scrape_profit_loss(cookies):
     reliance_url = 'https://www.screener.in/company/RELIANCE/consolidated/'
     response = requests.get(reliance_url, cookies=cookies)
@@ -41,16 +41,40 @@ def scrape_profit_loss(cookies):
             df = pd.DataFrame(data, columns=headers)
             # Replace any empty column names with 'column'
             df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
+            
+            # Process DataFrame
+            df1 = df.set_index('column')
+            print(df1)
+            print('---------------------------------------------------------------------')
+            
+            # Remove '%' and ',' characters
+            df1 = df1.replace('%', '', regex=True)
+            df1 = df1.replace(',', '', regex=True)
+            
+            print('---------------------------------------------------------------------')
+            print(df1.info())
+            
+            # Replace empty strings in 'TTM' column with '0'
+            df1['TTM'] = df1['TTM'].replace('', '0')
+            
+            # Convert all columns to float
+            for cols in df1.columns:
+                df1[cols] = df1[cols].astype(float)
+            
+            print(df1)
+            print('-----------------------------------------------------------------------------')
+            print(df1.info())
+            
             # Save DataFrame to CSV
-            df.to_csv('profit_loss.csv', index=False)
-            return df
+            df1.to_csv('profit_loss.csv', index=True)
+            return df1
         else:
             print("No data to insert.")
             return None
     else:
         print(f"Failed to access Reliance page. Status Code: {response.status_code}")
         return None
- 
+
 def load_csv_to_postgres():
     # PostgreSQL connection details
     user = os.getenv('POSTGRES_USER', 'user')
@@ -67,7 +91,7 @@ def load_csv_to_postgres():
     # Insert data into PostgreSQL
     df.to_sql('profit_loss', engine, if_exists='replace', index=False)
     print("Data has been inserted into PostgreSQL.")
- 
+
 def main():
     username = os.getenv('USERNAME')
     password = os.getenv('PASSWORD')
@@ -80,7 +104,6 @@ def main():
             load_csv_to_postgres()
         else:
             print("No DataFrame to save.")
- 
+
 if __name__ == "__main__":
     main()
-
