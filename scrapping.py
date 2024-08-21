@@ -46,46 +46,23 @@ def scrape_profit_loss(cookies):
             
             # Replace any empty column names with 'column'
             df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
-            #print(df)
             df1 = df.set_index('column')
             print(df1)
             print('---------------------------------------------------------------------')
             print(df1.info())
             print('---------------------------------------------------------------------')
 
-            
+            # Transpose DataFrame
             df_transpose = df1.transpose()
+            
+            # Remove '%' sign and convert to numeric
+            for col in df_transpose.columns:
+                if df_transpose[col].dtype == 'object':
+                    df_transpose[col] = df_transpose[col].str.replace('%', '', regex=True).str.replace(',', '', regex=True).astype(float)
+            
             print(df_transpose.fillna(0))
             print('----------------------------------------------------------------------------------')
             print(df_transpose.info())
-            
-            # # List of columns that may contain percentages
-            # percentage_columns = ['OPM', 'Tax', 'Dividend Payout']
-            
-            # # Remove '%' sign from specific columns and convert to numeric
-            # for col in df.columns:
-            #     if col in percentage_columns:
-            #         df[col] = df[col].astype(str).replace('%', '', regex=True).str.strip()
-                
-            #      #Convert the remaining columns to numeric (except percentage columns)
-            #     if col not in percentage_columns:
-            #         df[col] = df[col].astype(str).replace({',': '', '\$': ''}, regex=True).str.strip()
-            
-            # # Convert columns to numeric where possible
-            # df = df.apply(pd.to_numeric, errors='ignore')
-            
-            # # Fill NaN values with 0
-            # df = df.fillna(0)
-            
-            # # Calculate the mean for each row
-            # df['mean'] = df.mean(axis=1)
-
-            # # Print the DataFrame and the calculated means
-            # print("Original DataFrame:")
-            # print(df)
-            # print('------------------------')
-            # print('Row-wise Mean:')
-            # print(df_mean)
             
             return df
         else:
