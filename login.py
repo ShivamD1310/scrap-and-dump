@@ -49,6 +49,8 @@ def scrape_profit_loss(cookies):
             # Replace any empty column names with 'column'
             df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
 
+            df = df.transpose()
+
             df.set_index('column',inplace=True)
             df = df.replace('%','',regex=True)
             df = df.replace(',','',regex=True)
