@@ -3,12 +3,11 @@ import requests
 import pandas as pd
 from sqlalchemy import create_engine
 from bs4 import BeautifulSoup
-
+ 
 def login(username, password):
     login_url = 'https://www.screener.in/login/'
     response = requests.get(login_url)
     csrf_token = BeautifulSoup(response.text, 'html.parser').find('input', {'name': 'csrfmiddlewaretoken'})['value']
-    
     payload = {
         'username': username,
         'password': password,
@@ -20,52 +19,30 @@ def login(username, password):
     }
     response = requests.post(login_url, data=payload, headers=headers, cookies={'csrftoken': csrf_token})
     return response.cookies if response.status_code == 200 else None
-
+ 
 def scrape_profit_loss(cookies):
     reliance_url = 'https://www.screener.in/company/RELIANCE/consolidated/'
     response = requests.get(reliance_url, cookies=cookies)
-    
     if response.status_code == 200:
         soup = BeautifulSoup(response.text, 'html.parser')
-        
         # Extract headers
         headers = [header.text.strip() for header in soup.select('body main section:nth-of-type(5) div:nth-of-type(3) thead th')]
-        
         # Extract rows
         rows = soup.select('body main section:nth-of-type(5) div:nth-of-type(3) tbody tr')
-        
         # Prepare data for DataFrame
         data = []
         for row in rows:
             cols = [col.text.strip() for col in row.find_all('td')]
             if len(cols) > 1:
                 data.append(cols)
-        
         # Create DataFrame
         if data:
             # Ensure headers and data are correctly aligned
             df = pd.DataFrame(data, columns=headers)
-            
             # Replace any empty column names with 'column'
             df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
-
-            df = df.transpose()
-
-            #df.set_index('column',inplace=True)
-            df = df.replace('%','',regex=True)
-            df = df.replace(',','',regex=True)
-
-            df['TTM'] = df['TTM'].replace('','0',regex=True)
-
-            for cols in df.columns:
-                df[cols] = df[cols].astype(float)
-
-            print(df)
-            print(df.info())
-            
-            
             # Save DataFrame to CSV
-            df.to_csv('reliance.csv')
+            df.to_csv('profit_loss.csv', index=False)
             return df
         else:
             print("No data to insert.")
@@ -73,7 +50,7 @@ def scrape_profit_loss(cookies):
     else:
         print(f"Failed to access Reliance page. Status Code: {response.status_code}")
         return None
-
+ 
 def load_csv_to_postgres():
     # PostgreSQL connection details
     user = os.getenv('POSTGRES_USER', 'user')
@@ -81,24 +58,19 @@ def load_csv_to_postgres():
     host = os.getenv('POSTGRES_HOST', '192.168.3.116')  # Updated to the new IP address
     port = os.getenv('POSTGRES_PORT', '5432')
     database = os.getenv('POSTGRES_DB', 'task')
-    
     # Create an engine instance
     engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
-    
     # Read CSV into DataFrame
-    df = pd.read_csv('reliance.csv')
-    
+    df = pd.read_csv('profit_loss.csv')
     # Handle the case of any empty column names in the CSV
     df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
-    
     # Insert data into PostgreSQL
     df.to_sql('profit_loss', engine, if_exists='replace', index=False)
     print("Data has been inserted into PostgreSQL.")
-
+ 
 def main():
     username = os.getenv('USERNAME')
     password = os.getenv('PASSWORD')
-    
     cookies = login(username, password)
     if cookies:
         df = scrape_profit_loss(cookies)
@@ -108,6 +80,10 @@ def main():
             load_csv_to_postgres()
         else:
             print("No DataFrame to save.")
-
+ 
 if __name__ == "__main__":
     main()
+has context menu
+
+
+has context menu
