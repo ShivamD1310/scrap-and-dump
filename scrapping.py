@@ -70,9 +70,9 @@ def scrape_profit_loss(cookies):
             
             
             # Fill NaN values with 0
-            #df_transpose = df_transpose.fillna(0)
+            df_transpose = df_transpose.fillna(0)
             
-            #print(df_transpose)
+            print(df_transpose)
             #print('----------------------------------------------------------------------------------')
             #print(df_transpose.info())
             
