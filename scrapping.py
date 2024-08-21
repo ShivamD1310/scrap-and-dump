@@ -46,7 +46,7 @@ def scrape_profit_loss(cookies):
             df = pd.DataFrame(data, columns=headers)
             
             # Replace any empty column names with 'column'
-            df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
+            df.columns = [col if col.strip() != '' else 'year' for col in df.columns]
             df1 = df.set_index('column')
             print(df1)
             print('---------------------------------------------------------------------')
@@ -67,13 +67,17 @@ def scrape_profit_loss(cookies):
 
             # Transpose DataFrame
             df_transpose = df1.transpose()
+            print(df_transpose)
+            print('-----------------------------------------------------------------------------')
+            df_transpose = df_transpose.reset_index()
+            print(df_transpose)
             
             
             # Fill NaN values with 0
             #df_transpose = df_transpose.fillna(0)
             
-            print(df_transpose)
-            #print('----------------------------------------------------------------------------------')
+            
+            print('----------------------------------------------------------------------------------')
             #print(df_transpose.info())
             
             return df
