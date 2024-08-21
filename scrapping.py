@@ -55,8 +55,15 @@ def scrape_profit_loss(cookies):
             print('---------------------------------------------------------------------')
             print(df1.info())
 
+            for cols in df1.columns:
+                df1[cols] = df1[cols].astype(float)
+
+            print(df1)
+            print('-----------------------------------------------------------------------------')
+            print(df1.info())
+
             # Transpose DataFrame
-            df_transpose = df1.transpose()
+            #df_transpose = df1.transpose()
             
             
             # Fill NaN values with 0
