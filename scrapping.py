@@ -42,7 +42,7 @@ def scrape_profit_loss(cookies):
         
         # Create DataFrame
         if data:
-            df = pd.DataFrame(data, columns=headers,index=False)
+            df = pd.DataFrame(data, columns=headers)
             
             # Replace any empty column names with 'column'
             df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
