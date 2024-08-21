@@ -67,11 +67,11 @@ def scrape_profit_loss(cookies):
             df = df.transpose()
             df = df.reset_index()
             df.iloc[0,0]='year'
-            print(df)
+            #print(df)
             df.columns = df.iloc[0]
             df = df[1:]
-            print(df)
-            print(df.columns)
+            #print(df)
+            #print(df.columns)
             # df['new_col'] = range(1, len(df) + 1)
 
 
@@ -81,11 +81,18 @@ def scrape_profit_loss(cookies):
 
             for cols in df.columns[1:]:
                 df[cols] = df[cols].astype(float)
+            
+            cleaned_colum = []
+            for cols in df.columns:
+                cleaned_col = cols.replace(' ', '_').replace('+', '').strip()
+                cleaned_colum.append(cleaned_col)
+
+            df.columns = cleaned_colum
 
             print('-------------------------')
             print(df)
 
-            print(df.value_counts())
+            print(df.columns)
             print('-------------')
 
             #     df[cols] = df[cols].fillna(0)
