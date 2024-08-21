@@ -52,14 +52,14 @@ def scrape_profit_loss(cookies):
             print('---------------------------------------------------------------------')
             df1 = df1.replace('%','',regex=True)
             df1 = df1.replace(',','',regex=True)
-            print(df1)
+            #print(df1)
             print('---------------------------------------------------------------------')
             print(df1.info())
 
-            #for cols in df1.columns:
-             #   df1[cols] = df1[cols].fillna(0)
+            for cols in df1.columns:
+                df1[cols] = pd.to_numeric(df[cols], errors='coerce')
 
-            print(df1.fillna(0))
+            print(df1.)
             print('-----------------------------------------------------------------------------')
             print(df1.info())
 
