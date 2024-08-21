@@ -48,6 +48,7 @@ def scrape_profit_loss(cookies):
             # Replace any empty column names with 'column'
             df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
             df1 = df.set_index('column')
+            print(df1.index)
             print(df1)
             print('---------------------------------------------------------------------')
             print(df1.info())
@@ -56,14 +57,6 @@ def scrape_profit_loss(cookies):
             # Transpose DataFrame
             df_transpose = df1.transpose()
             
-            # Remove '%' sign, commas, and convert to numeric
-            for col in df_transpose.columns:
-                if df_transpose[col].dtype == 'object':
-                    # Remove '%' and commas
-                    df_transpose[col] = df_transpose[col].str.replace('%', '', regex=True).str.replace(',', '', regex=True)
-                    
-                    # Convert to numeric, set errors='coerce' to handle non-convertible values
-                    df_transpose[col] = pd.to_numeric(df_transpose[col], errors='coerce')
             
             # Fill NaN values with 0
             df_transpose = df_transpose.fillna(0)
