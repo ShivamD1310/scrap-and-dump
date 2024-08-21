@@ -50,7 +50,16 @@ def scrape_profit_loss(cookies):
             df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
 
             df.set_index('column',inplace=True)
-            
+            df = df.replace('%','',regex=True)
+            df = df.replace(',','',regex=True)
+
+            df['TTM'] = df['TTM'].replace('','0',regex=True)
+
+            for cols in df.columns:
+                df[cols] = df[cols].astype(float)
+
+            print(df)
+            print(df.info())
             
             
             # Save DataFrame to CSV
