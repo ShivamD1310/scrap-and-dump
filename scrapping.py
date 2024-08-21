@@ -56,10 +56,10 @@ def scrape_profit_loss(cookies):
             print('---------------------------------------------------------------------')
             print(df1.info())
 
-            for cols in df1.columns:
-                df1[cols] = df1[cols].fillna(0)
+            #for cols in df1.columns:
+             #   df1[cols] = df1[cols].fillna(0)
 
-            print(df1)
+            print(df1.fillna(0))
             print('-----------------------------------------------------------------------------')
             print(df1.info())
 
@@ -68,7 +68,7 @@ def scrape_profit_loss(cookies):
             
             
             # Fill NaN values with 0
-            df_transpose = df_transpose.fillna(0)
+            #df_transpose = df_transpose.fillna(0)
             
             #print(df_transpose)
             #print('----------------------------------------------------------------------------------')
