@@ -27,6 +27,7 @@ def scrape_profit_loss(cookies):
         soup = BeautifulSoup(response.text, 'html.parser')
         # Extract headers
         headers = [header.text.strip() for header in soup.select('body main section:nth-of-type(5) div:nth-of-type(3) thead th')]
+        headers[0] = 'year'
         # Extract rows
         rows = soup.select('body main section:nth-of-type(5) div:nth-of-type(3) tbody tr')
         # Prepare data for DataFrame
@@ -36,43 +37,62 @@ def scrape_profit_loss(cookies):
             if len(cols) > 1:
                 data.append(cols)
         # Create DataFrame
-        if data:
-            # Ensure headers and data are correctly aligned
+         if data:
             df = pd.DataFrame(data, columns=headers)
+            # print(df)
             
-            # Rename the first column to 'year' if it is unnamed
-            if df.columns[0].strip() == '':
-                df.columns.values[0] = 'year'
-            
-            # Set the 'year' column as index
-            df1 = df.set_index('year')
-            print(df1)
+            # Replace any empty column names with 'column'
+            #df.columns = [col if col.strip() != '' else 'year' for col in df.columns]
+            #df1 = df.set_index('year')
+            #print(df1)
             print('---------------------------------------------------------------------')
-            
-            # Remove '%' and ',' characters
-            df1 = df1.replace('%', '', regex=True)
-            df1 = df1.replace(',', '', regex=True)
-            
+            df = df.replace('%','',regex=True)
+            df = df.replace(',','',regex=True)
+            #print(df1)
             print('---------------------------------------------------------------------')
-            print(df1.info())
+            # print(df1.info())
+
+            print('--------------------------')
+            #print(df1.transpose())
+            df['TTM'] = df['TTM'].replace('','0')
+            df = df.transpose()
+            df.columns = df.iloc[0]
+            df = df[1:]
+
+
+            for cols in df.columns:
+                df[cols] = df[cols].astype(float)
+
+            # df = df.reset_index()
             
-            # Replace empty strings in 'TTM' column with '0'
-            df1['TTM'] = df1['TTM'].replace('', '0')
+            print(df)
+
+            print(df.columns)
+
+            # df1['TTM'] = df1['TTM'].replace('','0')
+
+            # for cols in df1.columns:
+            #     df1[cols] = df1[cols].astype(float)
+
+            # print(df1)
+            # print('-----------------------------------------------------------------------------')
+            # print(df1.info())
+
+            # # Transpose DataFrame
+            # df_transpose = df1.transpose()
+            # print(df_transpose)
+            # print('-----------------------------------------------------------------------------')
+            # df_transpose = df_transpose.reset_index()
+            # print(df_transpose)
             
-            # Convert all columns to float
-            for cols in df1.columns:
-                df1[cols] = df1[cols].astype(float)
             
-            print(df1)
-            print('-----------------------------------------------------------------------------')
-            print(df1.info())
+            # Fill NaN values with 0
+            #df_transpose = df_transpose.fillna(0)
             
-            # Save DataFrame to CSV
-            df1 = df1.transpose()
-            df1.columns = [col if col.strip() != '' else 'year' for col in df1.columns]
-            print(df1)
-            df1.to_csv('profit_loss.csv', index=True)
-            return df1
+            
+            #print('----------------------------------------------------------------------------------')
+            #print(df_transpose.info())
+            return df
         else:
             print("No data to insert.")
             return None
@@ -92,7 +112,7 @@ def load_csv_to_postgres():
     # Read CSV into DataFrame
     df = pd.read_csv('profit_loss.csv')
     # Handle the case of any empty column names in the CSV
-    df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
+    #df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
     # Insert data into PostgreSQL
     df.to_sql('profit_loss', engine, if_exists='replace', index=False)
     print("Data has been inserted into PostgreSQL.")
