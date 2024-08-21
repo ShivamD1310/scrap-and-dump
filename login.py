@@ -66,6 +66,7 @@ def scrape_profit_loss(cookies):
             print(df1.info())
             
             # Save DataFrame to CSV
+            df1 = df1.transpose()
             df1.to_csv('profit_loss.csv', index=True)
             return df1
         else:
