@@ -39,11 +39,13 @@ def scrape_profit_loss(cookies):
         if data:
             # Ensure headers and data are correctly aligned
             df = pd.DataFrame(data, columns=headers)
-            # Replace any empty column names with 'column'
-            df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
             
-            # Process DataFrame
-            df1 = df.set_index('column')
+            # Rename the first column to 'year' if it is unnamed
+            if df.columns[0].strip() == '':
+                df.columns.values[0] = 'year'
+            
+            # Set the 'year' column as index
+            df1 = df.set_index('year')
             print(df1)
             print('---------------------------------------------------------------------')
             
