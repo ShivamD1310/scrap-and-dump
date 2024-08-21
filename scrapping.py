@@ -57,7 +57,7 @@ def scrape_profit_loss(cookies):
             print(df1.info())
 
             for cols in df1.columns:
-                df1[cols] = df1[cols].astype(float)
+                df1[cols] = df1[cols].fillna(0)
 
             print(df1)
             print('-----------------------------------------------------------------------------')
