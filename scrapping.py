@@ -2,6 +2,7 @@ import pandas as pd
 from bs4 import BeautifulSoup
 import requests
 import os
+import numpy as np
 
 def login(username, password):
     login_url = 'https://www.screener.in/login/'
@@ -55,12 +56,19 @@ def scrape_profit_loss(cookies):
             # Transpose DataFrame
             df_transpose = df1.transpose()
             
-            # Remove '%' sign and convert to numeric
+            # Remove '%' sign, commas, and convert to numeric
             for col in df_transpose.columns:
                 if df_transpose[col].dtype == 'object':
-                    df_transpose[col] = df_transpose[col].str.replace('%', '', regex=True).str.replace(',', '', regex=True).astype(float)
+                    # Remove '%' and commas
+                    df_transpose[col] = df_transpose[col].str.replace('%', '', regex=True).str.replace(',', '', regex=True)
+                    
+                    # Convert to numeric, set errors='coerce' to handle non-convertible values
+                    df_transpose[col] = pd.to_numeric(df_transpose[col], errors='coerce')
             
-            print(df_transpose.fillna(0))
+            # Fill NaN values with 0
+            df_transpose = df_transpose.fillna(0)
+            
+            print(df_transpose)
             print('----------------------------------------------------------------------------------')
             print(df_transpose.info())
             
