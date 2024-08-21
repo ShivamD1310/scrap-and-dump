@@ -63,7 +63,7 @@ def scrape_profit_loss(cookies):
             
             
             # Save DataFrame to CSV
-            df.to_csv('profit_loss.csv', index=False)
+            df.to_csv('reliance.csv', index=False)
             return df
         else:
             print("No data to insert.")
@@ -84,7 +84,7 @@ def load_csv_to_postgres():
     engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
     
     # Read CSV into DataFrame
-    df = pd.read_csv('profit_loss.csv')
+    df = pd.read_csv('reliance.csv')
     
     # Handle the case of any empty column names in the CSV
     df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
