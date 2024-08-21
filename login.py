@@ -49,7 +49,7 @@ def scrape_profit_loss(cookies):
             # Replace any empty column names with 'column'
             df.columns = [col if col.strip() != '' else 'column' for col in df.columns]
 
-            #df.set_index('column',inplace=True)
+            df.set_index('column',inplace=True)
             df = df.replace('%','',regex=True)
             df = df.replace(',','',regex=True)
 
@@ -63,7 +63,7 @@ def scrape_profit_loss(cookies):
             
             
             # Save DataFrame to CSV
-            df.to_csv('reliance.csv', index=False)
+            df.to_csv('reliance.csv')
             return df
         else:
             print("No data to insert.")
