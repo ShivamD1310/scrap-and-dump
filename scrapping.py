@@ -52,7 +52,7 @@ def scrape_profit_loss(cookies):
             print('---------------------------------------------------------------------')
             
             df_transpose = df1.transpose()
-            print(df_transpose.fillna(0)
+            print(df_transpose.fillna(0))
             print('----------------------------------------------------------------------------------')
             print(df_transpose.info())
             
