@@ -48,27 +48,84 @@ def scrape_profit_loss(cookies):
         if data:
             df = pd.DataFrame(data, columns=headers)
             
-            # Clean data: remove '%', ',' and handle empty strings
-            df = df.replace('%', '', regex=True)
-            df = df.replace(',', '', regex=True)
-            df['TTM'] = df['TTM'].replace('', '0')
+            # print(df)
             
-            # Transpose DataFrame to match the desired format
+            # Replace any empty column names with 'column'
+            #df.columns = [col if col.strip() != '' else 'year' for col in df.columns]
+            #df1 = df.set_index('year')
+            #print(df1)
+            print('---------------------------------------------------------------------')
+            df = df.replace('%','',regex=True)
+            df = df.replace(',','',regex=True)
+            #print(df1)
+            print('---------------------------------------------------------------------')
+            # print(df1.info())
+
+            print('--------------------------')
+            #print(df1.transpose())
+            df['TTM'] = df['TTM'].replace('','0')
             df = df.transpose()
+            df = df.reset_index()
+            df.iloc[0,0]='year'
+            print(df)
             df.columns = df.iloc[0]
             df = df[1:]
-            
-            # Convert columns to float
-            for col in df.columns:
-                df[col] = pd.to_numeric(df[col], errors='coerce')
-            
-            # Fill NaN values with 0
-            df = df.fillna(0)
-            
-            print("Processed DataFrame:")
             print(df)
             print(df.columns)
+            # df['new_col'] = range(1, len(df) + 1)
+
+
+
+
+
+
+            for cols in df.columns[1:]:
+                df[cols] = df[cols].astype(float)
+
+            print('-------------------------')
+            print(df)
+
+            print(df.value_counts())
+            print('-------------')
+
+            #     df[cols] = df[cols].fillna(0)
+            # print(df)
+            #df.iloc[0,0] = 'year'
+
+            # df = df.rename_axis('year').reset_index()
+            # df = df.set_index('year')
+            # df = df.reset_index()
+            # print(df)
+            # df.columns.values[0] = 'year'
+            # print(df.columns)
+            # print(df['index'])
+            # df.rename()
+
+            # df1['TTM'] = df1['TTM'].replace('','0')
+
+            # for cols in df1.columns:
+            #     df1[cols] = df1[cols].astype(float)
+
+            # print(df1)
+            # print('-----------------------------------------------------------------------------')
+            # print(df1.info())
+
+            # # Transpose DataFrame
+            # df_transpose = df1.transpose()
+            # print(df_transpose)
+            # print('-----------------------------------------------------------------------------')
+            # df_transpose = df_transpose.reset_index()
+            # print(df_transpose)
             
+            
+            # Fill NaN values with 0
+            #df_transpose = df_transpose.fillna(0)
+            
+            
+            print('----------------------------------------------------------------------------------')
+            #print(df_transpose.info())
+            
+
             return df
         else:
             print("No data to insert.")
