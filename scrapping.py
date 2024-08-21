@@ -56,8 +56,7 @@ def scrape_profit_loss(cookies):
             print('---------------------------------------------------------------------')
             print(df1.info())
 
-            for cols in df1.columns:
-                df1[cols] = pd.to_numeric(df[cols], errors='coerce')
+            df1['TTM'] = df1['TTM'].replace('','0')
 
             print(df1)
             print('-----------------------------------------------------------------------------')
