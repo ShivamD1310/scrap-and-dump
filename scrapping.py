@@ -50,14 +50,14 @@ def scrape_profit_loss(cookies):
             df1 = df.set_index('column')
             print(df1)
             print('---------------------------------------------------------------------')
-            df1 = df1.replace('%','',regex=True).strip()
-            df1 = df1.replace(',','',regex=True).strip()
+            df1 = df1.replace('%','',regex=True)
+            df1 = df1.replace(',','',regex=True)
             print(df1)
             print('---------------------------------------------------------------------')
             print(df1.info())
 
             for cols in df1.columns:
-                df1[cols] = df1[cols].str.astype(float)
+                df1[cols] = df1[cols].astype(float)
 
             print(df1)
             print('-----------------------------------------------------------------------------')
