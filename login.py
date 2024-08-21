@@ -70,6 +70,7 @@ def scrape_profit_loss(cookies):
             # Save DataFrame to CSV
             df1 = df1.transpose()
             df1.columns = [col if col.strip() != '' else 'year' for col in df1.columns]
+            df1.columns.values[0] = 'year'
             df1.to_csv('profit_loss.csv', index=True)
             return df1
         else:
