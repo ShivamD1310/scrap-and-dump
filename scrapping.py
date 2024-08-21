@@ -59,7 +59,7 @@ def scrape_profit_loss(cookies):
             for cols in df1.columns:
                 df1[cols] = pd.to_numeric(df[cols], errors='coerce')
 
-            print(df1.)
+            print(df1)
             print('-----------------------------------------------------------------------------')
             print(df1.info())
 
