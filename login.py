@@ -146,7 +146,7 @@ def load_csv_to_postgres():
     # PostgreSQL connection details
     user = os.getenv('POSTGRES_USER', 'user')
     password = os.getenv('POSTGRES_PASSWORD', 'test123')
-    host = os.getenv('POSTGRES_HOST', '192.168.0.165')  # Updated to the new IP address
+    host = os.getenv('POSTGRES_HOST', '192.168.3.116')  # Updated to the new IP address
     port = os.getenv('POSTGRES_PORT', '5432')
     database = os.getenv('POSTGRES_DB', 'task')
     
