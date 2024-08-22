@@ -63,7 +63,8 @@ def scrape_profit_loss(cookies):
 
             print('--------------------------')
             #print(df1.transpose())
-            df['TTM'] = df['TTM'].replace('','0')
+            #df['TTM'] = df['TTM'].replace('','0')
+            df = df.drop(df.columns[-1],axis=1)
             df = df.transpose()
             df = df.reset_index()
             df.iloc[0,0]='year'
