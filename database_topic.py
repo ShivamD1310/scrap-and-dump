@@ -27,8 +27,7 @@ engine = create_engine(db_conn_str)
 # Define the query to fetch data from PostgreSQL
 query = """
 SELECT
-    "column", "Mar 2013", "Mar 2014", "Mar 2015", "Mar 2016", "Mar 2017", "Mar 2018", "Mar 2019",
-    "Mar 2020", "Mar 2021", "Mar 2022", "Mar 2023", "Mar 2024", "TTM"
+    *
 FROM profit_loss;
 """
 
