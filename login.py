@@ -86,7 +86,11 @@ def scrape_profit_loss(cookies):
             cleaned_colum = []
             for cols in df.columns:
                 cleaned_col = cols.replace(' ', '_').replace('+', '').strip()
-                cleaned_colum.append(cleaned_col)
+                if cleaned_col.endswith('_'):
+                    cleaned = cleaned_col.rstrip('_')+'_%'
+                    cleaned_colum.append(cleaned)
+                else:    
+                    cleaned_colum.append(cleaned_col)
 
             df.columns = cleaned_colum
 
