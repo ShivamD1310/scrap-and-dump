@@ -27,7 +27,7 @@ engine = create_engine(db_conn_str)
 query = """
 SELECT
     *
-FROM profit_loss;
+FROM nifty_companies;
 """
 
 def send_to_kafka(producer, topic, df):
@@ -45,7 +45,7 @@ def main():
     df = pd.read_sql(query, engine)
     
     # Kafka topic name
-    topic = 'task7'  
+    topic = 'tableau'  
     
     # Send data to Kafka
     send_to_kafka(producer, topic, df)
