@@ -45,7 +45,7 @@ def main():
     df = pd.read_sql(query, engine)
     
     # Kafka topic name
-    topic = 'tableau'  
+    topic = 'nifty'  
     
     # Send data to Kafka
     send_to_kafka(producer, topic, df)
