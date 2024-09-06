@@ -1,26 +1,3 @@
-# import requests
-
-# url = "https://indian-stock-exchange-api2.p.rapidapi.com/historical_data"
-
-# querystring = {"stock_name":"tcs","period":"6m","filter":"ohlc"}
-
-# headers = {
-# 	"x-rapidapi-key": "514c978525mshc98e8dea4f6af6fp107651jsnb4d358bd5e56",
-# 	"x-rapidapi-host": "indian-stock-exchange-api2.p.rapidapi.com"
-# }
-
-# response = requests.get(url, headers=headers, params=querystring)
-
-# print(response.json())
-
-
-# import requests
-# url = 'https://api.polygon.io/v2/aggs/ticker/TCS/range/1/day/2024-08-01/2024-09-06?adjusted=true&sort=asc&apiKey=3VvRdrCzKkRpdxsw0jQd0C8KoicQd9lg'
-
-# response = requests.get(url)
-# print(response.json())
-
-
 import requests
 import pandas as pd
 from sqlalchemy import create_engine
@@ -57,9 +34,14 @@ def reading_data():
     #print(len(df))
     df = df.iloc[:len(df)-1]
     df['Stock'] = stock_name
-    # print(df)
+    #print(df)
     # print('-------------------------------------------------------------------------------------')
     # print(df.info())
+    return df
+
+def save_to_csv(df):
+    df.to_csv('itc.csv', index=False)
+    print("Data has been saved to 'itc.csv'.")
 
 def load_csv_to_postgres():
     user = os.getenv('POSTGRES_USER', 'user')
@@ -71,8 +53,16 @@ def load_csv_to_postgres():
     engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
     
     df = pd.read_csv('itc.csv')
-    df.to_sql('itc', engine, if_exists='replace', index=False)
+    df.to_sql('us_salaries', engine, if_exists='replace', index=False)
     print("Data has been inserted into PostgreSQL.")
 
-reading_data()
-load_csv_to_postgres()
+def main():
+    df = reading_data()
+    
+    if not df.empty:
+        print(df)
+        save_to_csv(df)
+        load_csv_to_postgres()
+
+if __name__ == "__main__":
+    main()
