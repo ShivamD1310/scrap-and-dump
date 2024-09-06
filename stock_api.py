@@ -71,7 +71,7 @@ def load_csv_to_postgres():
     engine = create_engine(f'postgresql://{user}:{password}@{host}:{port}/{database}')
     
     df = pd.read_csv('itc.csv')
-    df.to_sql('us_salaries', engine, if_exists='replace', index=False)
+    df.to_sql('itc', engine, if_exists='replace', index=False)
     print("Data has been inserted into PostgreSQL.")
 
 reading_data()
